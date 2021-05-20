@@ -10,10 +10,8 @@
 
 Graph* newGraph(int numberOfRooms)
 {
-    //TODO: Fix this when done debugging
-    // Seed random for generateRandomRoom()
     //srand((unsigned)time(NULL));
-    srand(0);
+    srand(12345);
 
     // Allocate memory for graph and flex array
     Graph* graph = malloc(sizeof(Graph) + (sizeof(Room) * numberOfRooms));
@@ -28,12 +26,22 @@ Graph* newGraph(int numberOfRooms)
     graph->numberOfRooms = numberOfRooms;
     graph->isFull = false;  // TODO: Get rid of this
 
+    // Generate WordCollection for room names
+    WordCollection* wordCollection = newWordCollection(g_n_rooms);
+
+    assert(wordCollection);
+
+    if (wordCollection == NULL)
+    {
+        return NULL;
+    }
+
     int startRoomIndex = rand() % g_n_rooms;
-    int endRoomIndex = (rand() + 7769) % g_n_rooms;
+    int endRoomIndex = rand() % g_n_rooms;
 
     while (startRoomIndex == endRoomIndex)
     {
-        endRoomIndex = (rand() + rand()) % g_n_rooms;
+        endRoomIndex = rand() % g_n_rooms;
     }
 
     // Initialize all rooms in graph
@@ -59,7 +67,7 @@ Graph* newGraph(int numberOfRooms)
 
         NextRoom roomItr = &(graph->roomsArray[i]);
 
-        roomItr = initializeRoom(roomItr, roomType, generateRandomName(), g_max_connections);
+        roomItr = initializeRoom(roomItr, roomType, wordCollection->roomNames[i], g_max_connections);
 
         assert(roomItr == &(graph->roomsArray[i]));
     }
@@ -69,25 +77,11 @@ Graph* newGraph(int numberOfRooms)
 }
 
 
-const char* generateRandomName()
+const char* generateRandomName(WordCollection* wordCollection, int index)
 {
-    static int i = 0;
+    char* name = _strdup(wordCollection->roomNames[index]);
 
-    char str = "abcdefghijklmnopqrstuvwxyz"[i++];
-
-    char* retVal = malloc(sizeof(char) * 2);
-
-    if (retVal == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        retVal[0] = str;
-        retVal[1] = '\0';
-    }
-
-    return retVal;
+    return name;
 }
 
 
@@ -106,7 +100,6 @@ bool isGraphFull(Graph* graph)
 {
     for (size_t i = 0; i < graph->numberOfRooms; i++)
     {
-        // if (&graph->roomsArray[i]->n_connections < g_min_connections || &graph->roomsArray[i]->n_connections < g_max_connections)
         if (!isRoomConnectionsSatisfied(&graph->roomsArray[i]))
         {
             return false;
@@ -119,7 +112,6 @@ bool isGraphFull(Graph* graph)
 
 void createRandomConnection(Graph* graph)
 {
-    // Should these be pointers?
     Room* A;
     Room* B;
 
@@ -202,7 +194,6 @@ void writeGraphFiles(const Graph* graph)
 
     // make directory
     int dirCheck = _mkdir(buffer);
-    //assert(dirCheck == 0);
 
 
     // iterate through rooms and call writeRoomFile()
@@ -217,7 +208,7 @@ void writeRoomFile(const Room* room, const char* parentDirectory)
 {
     char buffer[_MAX_PATH] = { 0 };
 
-    sprintf_s(buffer, sizeof(buffer), "%s/%s_room", parentDirectory, room->roomName);
+    sprintf_s(buffer, sizeof(buffer), "%s/%s_room.txt", parentDirectory, room->roomName);
 
     FILE* file = fopen(buffer, "w");
     assert(file);
@@ -238,6 +229,7 @@ void writeRoomFile(const Room* room, const char* parentDirectory)
     }
 
     memset(buffer, 0, sizeof(buffer));
+
     char* roomType = malloc(sizeof(char));
     switch (room->roomType)
     {
@@ -267,11 +259,6 @@ int main(int argc, char* argv[])
     for (size_t i = 0; i < g_n_rooms; i++) {
         printf("Room %d) %s\n", i, graph->roomsArray[i].roomName);
     }
-
-    /*   connectRooms(&graph->roomsArray[0], &graph->roomsArray[3]);
-
-       isUniqueConnectionPossible(&graph->roomsArray[0], &graph->roomsArray[3]) ? printf("Not Connected\n")
-           : printf("Connected\n");*/
 
     while (!isGraphFull(graph))
     {
