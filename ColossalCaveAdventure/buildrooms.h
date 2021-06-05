@@ -4,13 +4,7 @@
 
 #include "getdata.h"
 
-// TODO: get these from command line
- // Dynamic Constants
-const size_t g_min_connections = 7;
-const size_t g_max_connections = 12;
-const size_t g_n_rooms = 18;
-
-// 4.2
+// Enum that represents type of Room
 typedef enum RoomType_
 {
 	START_ROOM = 1,
@@ -22,29 +16,31 @@ typedef enum RoomType_
 typedef struct Room_** RoomsArray;
 // Pointer to a Room
 typedef struct Room_* NextRoom;
+
 // Struct for a Room
 typedef struct Room_
 {
 	char* roomName;
 	RoomType		roomType;
 	size_t			n_connections;
-	RoomsArray		connections; // figure out how to allocate this at runtime 
+	RoomsArray		connections;
 }	Room;
 
 // Struct for the Rooms Graph
 typedef struct Graph_
 {
-	bool			isFull;
 	size_t			numberOfRooms;
-	Room			roomsArray[];			// Flexible array, look to notes to figure out how to allocate
+	size_t			minConnections;
+	size_t			maxConnections;
+	Room			roomsArray[];
 }	Graph;
 
 
 // Function that creates the main rooms directory with the PID
 void createRoomsDirectory(int pid);
 
-// Function for creating a new Graph object
-Graph* newGraph(int numberOfRooms);
+// Function for creating and returning a new Graph object
+Graph* newGraph(size_t numberOfRooms, size_t minConnections, size_t maxConnections);
 
 // Function for checking if the Graph graph is full
 bool isGraphFull(Graph* graph);
@@ -53,7 +49,7 @@ bool isGraphFull(Graph* graph);
 const char* generateRandomName(WordCollection* wordCollection, int index);
 
 // Function for intializing a newly created Room room
-Room* initializeRoom(Room* room, RoomType roomType, const char* roomName, size_t connections);
+Room* initializeRoom(Room* room, RoomType roomType, const char* roomName, const size_t connections);
 
 // Function for creating a random connection between two random Rooms from Graph graph
 void createRandomConnection(Graph* graph);
@@ -62,13 +58,13 @@ void createRandomConnection(Graph* graph);
 Room* getRandomRoom(Graph* graph);
 
 // Function for checking if Room room needs more connections
-bool isRoomConnectionsSatisfied(const Room* room);
+bool isRoomConnectionsSatisfied(const Room* room, const size_t minConnections, const size_t maxConnections);
 
 // Function for checking if a unique connection can be created between Room room1 and Room room2
 bool isUniqueConnectionPossible(const Room* room1, const Room* room2);
 
 // Function for creating a connection between Room room1 and Room room2
-void connectRooms(Room* room1, Room* room2);
+void connectRooms(Room* room1, Room* room2, const size_t maxConnections);
 
 // Function for writing the text files for Graph graph
 void writeGraphFiles(const Graph* graph);
