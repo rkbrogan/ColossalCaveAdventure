@@ -100,7 +100,7 @@ Room* initializeRoom(Room* room, RoomType roomType, const char* roomName, const 
 
     assert(room->connections);
 
-    room->n_connections = 0;
+    room->numberOfConnections = 0;
 
     return room;
 }
@@ -136,7 +136,7 @@ void createRandomConnection(Graph* graph)
         A = getRandomRoom(graph);
 
         // Check if Room A's connections is less than the maximum number of allowed connections
-        if (A->n_connections < graph->maxConnections)
+        if (A->numberOfConnections < graph->maxConnections)
         {
             break;
         }
@@ -146,7 +146,7 @@ void createRandomConnection(Graph* graph)
     do
     {
         B = getRandomRoom(graph);
-    } while ((B->n_connections >= graph->maxConnections) || isUniqueConnectionPossible(A, B) == false);
+    } while ((B->numberOfConnections >= graph->maxConnections) || isUniqueConnectionPossible(A, B) == false);
 
     // Connect rooms A and B
     connectRooms(A, B, graph->maxConnections);
@@ -163,7 +163,7 @@ Room* getRandomRoom(Graph* graph)
 bool isRoomConnectionsSatisfied(const Room* room, const size_t minConnections, const size_t maxConnections)
 {
     // Check if Room room's number of connections is between minConnections and maxConnections
-    return (room->n_connections >= minConnections) && (room->n_connections <= maxConnections);
+    return (room->numberOfConnections >= minConnections) && (room->numberOfConnections <= maxConnections);
 }
 
 
@@ -177,7 +177,7 @@ bool isUniqueConnectionPossible(const Room* room1, const Room* room2)
 
 
     // See if rooms are already connected
-    for (size_t i = 0; i < room1->n_connections; i++)
+    for (size_t i = 0; i < room1->numberOfConnections; i++)
     {
         if (room1->connections[i] == room2)
         {
@@ -196,12 +196,12 @@ void connectRooms(Room* room1, Room* room2, const size_t maxConnections)
     assert(room2);
     
     // Assert that room1 and room2 can have more connections
-    assert(maxConnections != room1->n_connections);
-    assert(maxConnections != room2->n_connections);
+    assert(maxConnections != room1->numberOfConnections);
+    assert(maxConnections != room2->numberOfConnections);
     
     // Connect room1 and room2
-    room1->connections[room1->n_connections++] = room2;
-    room2->connections[room2->n_connections++] = room1;
+    room1->connections[room1->numberOfConnections++] = room2;
+    room2->connections[room2->numberOfConnections++] = room1;
 }
 
 
@@ -254,7 +254,7 @@ void writeRoomFile(const Room* room, const char* parentDirectory)
     fprintf_s(file, "%s", buffer);
 
     // Iterate through all of Room room's connections and write them to file
-    for (size_t i = 0; i < room->n_connections; i++)
+    for (size_t i = 0; i < room->numberOfConnections; i++)
     {
         room->connections[i]->roomName;
         memset(buffer, 0, sizeof(buffer));

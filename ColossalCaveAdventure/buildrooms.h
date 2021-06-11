@@ -2,42 +2,43 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "getdata.h"
+#include "wordcollection.h"
 
 // Enum that represents type of Room
 typedef enum RoomType_
 {
-	START_ROOM = 1,
+	START_ROOM,
 	MID_ROOM,
 	END_ROOM
 }	RoomType;
 
 // Pointer to a Room pointer
 typedef struct Room_** RoomsArray;
+
 // Pointer to a Room
 typedef struct Room_* NextRoom;
 
 // Struct for a Room
 typedef struct Room_
 {
-	char* roomName;
+	char*           roomName;
 	RoomType		roomType;
-	size_t			n_connections;
+	size_t			numberOfConnections;
 	RoomsArray		connections;
 }	Room;
 
 // Struct for the Rooms Graph
 typedef struct Graph_
 {
-	size_t			numberOfRooms;
 	size_t			minConnections;
 	size_t			maxConnections;
+	size_t			numberOfRooms;
 	Room			roomsArray[];
 }	Graph;
 
-
-// Function that creates the main rooms directory with the PID
-void createRoomsDirectory(int pid);
+// TODO: Move all graph functions to graph.h
+// TODO: Move all room functions to room.h
+// TODO: Move wordCollection function to wordCollection.h
 
 // Function for creating and returning a new Graph object
 Graph* newGraph(size_t numberOfRooms, size_t minConnections, size_t maxConnections);
@@ -45,6 +46,7 @@ Graph* newGraph(size_t numberOfRooms, size_t minConnections, size_t maxConnectio
 // Function for checking if the Graph graph is full
 bool isGraphFull(Graph* graph);
 
+// TODO: move this to wordCollection as generateRandomWord()
 // Function for generating a random name for a Room
 const char* generateRandomName(WordCollection* wordCollection, int index);
 

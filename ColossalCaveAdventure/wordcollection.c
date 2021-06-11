@@ -1,4 +1,4 @@
-#include "getdata.h"
+#include "wordcollection.h"
 
 #include <assert.h>
 #include <ctype.h>
