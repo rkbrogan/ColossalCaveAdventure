@@ -9,7 +9,21 @@
 #define MAX_SENTENCE_SIZE 300
 
 // Check if word already exists in collection
-bool isWordADuplicate(const WordCollection* wordCollection, const char* word);
+bool isWordADuplicate(const WordCollection* wordCollection, const char* word)
+{
+	bool result = false;
+
+	for (size_t i = 0; i < wordCollection->numberOfRoomNames; i++)
+	{
+		if (strcmp(wordCollection->roomNames[i], word) == 0)
+		{
+			result = true;
+			break;
+		}
+	}
+
+	return result;
+}
 
 
 WordCollection* newWordCollection(size_t numberOfWords)
@@ -40,16 +54,10 @@ WordCollection* newWordCollection(size_t numberOfWords)
 		return NULL;
 	}
 
-
-	// TODO: stat or fseek(seek_end)/ftell
-	//size_t startingPosition = rand() % MAX_FILE_POSITION;
-	//size_t startingPosition = 8692;
-
 	// Get position at the end of the file
 	fseek(fp, -1, SEEK_END);
 
 	// Create random starting positon by using the max number of characters in file
-
 	int val = rand();
 	long pos = ftell(fp);
 	size_t startingPosition = val % pos;
@@ -67,9 +75,6 @@ WordCollection* newWordCollection(size_t numberOfWords)
 
 	// Char for sentence, since we will read one sentence from text file at a time
 	char sentence[MAX_SENTENCE_SIZE];
-
-	// Initialize a counter for words that fit room name criteria
-	//int wordCount = 0;
 
 	// Loop for word by word in each sentence while possible and continueLoop is true
 	while (fscanf_s(fp, "%s[^\n]", sentence, MAX_SENTENCE_SIZE - 1) == 1 && continueLoop)
@@ -104,7 +109,6 @@ WordCollection* newWordCollection(size_t numberOfWords)
 				{
 					// Add word to collection
 					wordCollection->roomNames[wordCollection->numberOfRoomNames] = _strdup(currentWord);
-					//wordCount++;
 					wordCollection->numberOfRoomNames++;
 #ifdef _DEBUG
 					printf("%ld | %d\t%s\n", ftell(fp), wordCollection->numberOfRoomNames,currentWord);
@@ -130,28 +134,9 @@ WordCollection* newWordCollection(size_t numberOfWords)
 		}
 	}
 
-	// Set numberOfRoomNames for worcCollection
-	//assert(wordCollection->numberOfRoomNames == wordCount);
-
 	// Close file
 	fclose(fp);
 
 	// Return populated wordCollection
 	return wordCollection;
-}
-
-bool isWordADuplicate(const WordCollection* wordCollection, const char* word)
-{
-	bool result = false;
-
-	for (size_t i = 0; i < wordCollection->numberOfRoomNames; i++)
-	{
-		if (strcmp(wordCollection->roomNames[i], word) == 0)
-		{
-			result = true;
-			break;
-		}
-	}
-
-	return result;
 }
