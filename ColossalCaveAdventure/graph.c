@@ -73,11 +73,13 @@ Graph* newGraph(size_t numberOfRooms, size_t minConnections, size_t maxConnectio
         NextRoom roomItr = &(graph->roomsArray[i]);
 
         // Initialize room
-        roomItr = initializeRoom(roomItr, roomType, wordCollection->roomNames[i], maxConnections);
+        roomItr = initializeRoom(roomItr, roomType, wordCollection->words[i], maxConnections);
 
         // Assert room pointer matches room in graph
         assert(roomItr == &(graph->roomsArray[i]));
     }
+
+    destroyWordCollection(wordCollection);
 
     return graph;
 }
@@ -134,6 +136,16 @@ Room* getRandomRoom(Graph* graph)
 {
     int r = rand();
     return &graph->roomsArray[r % graph->numberOfRooms];
+}
+
+void destroyGraph(Graph* graph)
+{
+    for (size_t i = 0; i < graph->numberOfRooms; i++)
+    {
+        destroyRoom(&graph->roomsArray[i]);
+    }
+
+    free(graph);
 }
 
 
