@@ -18,8 +18,11 @@ Graph* newGraph(size_t numberOfRooms);
 *		If start room discovered, flag it and mark its location	
 */ 
 
+// Function for populating graph
+Graph* populateGraph(Graph* graph, const char* path);
+
 // Function for determining if Graph graph contains Room roomName
-bool doesGraphContainRoom(Room* room);
+bool doesGraphContainRoom(Graph* graph, Room* room);
 
 // Function for destroying graph
 void destroyGraph(Graph* graph);
