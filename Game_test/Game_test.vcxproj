@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\munit-master\example.c" />
     <ClCompile Include="..\..\munit-master\munit.c" />
+    <ClCompile Include="..\Game\graph.c" />
     <ClCompile Include="room-test.c" />
   </ItemGroup>
   <ItemGroup>
