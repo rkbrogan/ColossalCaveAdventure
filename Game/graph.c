@@ -20,13 +20,13 @@ Graph* newGraph(size_t numberOfRooms)
     return graph;
 }  // end of newGraph()
 
-Graph* populateGraph(Graph* graph, const char* path)
-{
-    // Navigate to path
-    // Read file
-    // Create room
-    // Add room to graph->roomsArray[i]
-}
+//Graph* populateGraph(Graph* graph, const char* path)
+//{
+//    // Navigate to path
+//    // Read file
+//    // Create room
+//    // Add room to graph->roomsArray[i]
+//}
 
 
 bool doesGraphContainRoom(Graph* graph, Room* room)
@@ -46,3 +46,12 @@ bool doesGraphContainRoom(Graph* graph, Room* room)
     return result;
 }  // end of doesGraphContainRoom()
 
+void destroyGraph(Graph* graph)
+{
+    for (size_t i = 0; i < graph->numberOfRooms; i++)
+    {
+        //destroyRoom(&graph->roomsArray[i]);
+    }
+
+    free(graph);
+}
