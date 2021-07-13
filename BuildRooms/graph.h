@@ -19,16 +19,16 @@ typedef struct Graph_
 Graph* newGraph(size_t numberOfRooms, size_t minConnections, size_t maxConnections);
 
 // Function for creating a random connection between two random Rooms from Graph graph
-void createRandomConnection(Graph* graph);
+void   createRandomConnection(Graph* graph);
 
 // Function for checking if the Graph graph is full
-bool isGraphFull(Graph* graph);
+bool   isGraphFull(Graph* graph);
 
 // Function for writing the text files for Graph graph
-void writeGraphFiles(const Graph* graph);
-
-// Function for destroying Graph graph
-void destroyGraph(Graph* graph);
+void   writeGraphFiles(const Graph* graph);
 
 // Function for getting and random Room from Graph graph
-Room* getRandomRoom(Graph* graph);
+Room*  getRandomRoom(Graph* graph);
+
+// Function for destroying Graph graph
+void   destroyGraph(Graph* graph);

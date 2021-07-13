@@ -1,0 +1,14 @@
+{
+  "FileVersion": 2,
+  "Id": "3b077a4f-cbc0-43e1-9994-698b9e0892ef",
+  "Items": [
+    {
+      "Id": "de1c1b5f-9034-4b9e-9656-c5b821c1784d",
+      "Command": "--iterations 1000"
+    },
+    {
+      "Id": "5c207255-8892-467f-8b3a-b58f8eddfadc",
+      "Command": "--color always"
+    }
+  ]
+}

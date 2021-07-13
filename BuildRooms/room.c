@@ -130,3 +130,9 @@ void writeRoomFile(const Room* room, const char* parentDirectory)
     // Close completed room file
     fclose(file);
 }
+
+void destroyRoom(Room* room)
+{
+    free(room->roomName);
+    free(room->connections);
+}

@@ -13,9 +13,9 @@ bool isWordADuplicate(const WordCollection* wordCollection, const char* word)
 {
 	bool result = false;
 
-	for (size_t i = 0; i < wordCollection->numberOfRoomNames; i++)
+	for (size_t i = 0; i < wordCollection->numberOfWords; i++)
 	{
-		if (strcmp(wordCollection->roomNames[i], word) == 0)
+		if (strcmp(wordCollection->words[i], word) == 0)
 		{
 			result = true;
 			break;
@@ -41,7 +41,7 @@ WordCollection* newWordCollection(size_t numberOfWords)
 		return wordCollection;
 	}
 
-	wordCollection->numberOfRoomNames = 0;
+	wordCollection->numberOfWords = 0;
 
 	// Create file pointer to read text file
 	FILE* fp;
@@ -108,10 +108,10 @@ WordCollection* newWordCollection(size_t numberOfWords)
 				if (!isWordADuplicate(wordCollection, currentWord))
 				{
 					// Add word to collection
-					wordCollection->roomNames[wordCollection->numberOfRoomNames] = _strdup(currentWord);
-					wordCollection->numberOfRoomNames++;
+					wordCollection->words[wordCollection->numberOfWords] = _strdup(currentWord);
+					wordCollection->numberOfWords++;
 #ifdef _DEBUG
-					printf("%ld | %d\t%s\n", ftell(fp), wordCollection->numberOfRoomNames,currentWord);
+					printf("%ld | %d\t%s\n", ftell(fp), wordCollection->numberOfWords,currentWord);
 #endif // _DEBUG
 
 				}
@@ -120,7 +120,7 @@ WordCollection* newWordCollection(size_t numberOfWords)
 				token = strtok_s(NULL, delim, &next_token);
 
 				// If we have all the words required, flag for exit out of loop
-				continueLoop = (wordCollection->numberOfRoomNames != numberOfWords);
+				continueLoop = (wordCollection->numberOfWords != numberOfWords);
 			}
 		}
 		else
@@ -139,4 +139,14 @@ WordCollection* newWordCollection(size_t numberOfWords)
 
 	// Return populated wordCollection
 	return wordCollection;
+}
+
+void destroyWordCollection(WordCollection* wordCollection)
+{
+	for (size_t i = 0; i < wordCollection->numberOfWords; i++)
+	{
+		free(wordCollection->words[i]);
+	}
+
+	free(wordCollection);
 }
