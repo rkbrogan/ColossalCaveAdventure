@@ -29,14 +29,14 @@ Graph* newGraph(size_t numberOfRooms)
 //}
 
 
-bool doesGraphContainRoom(Graph* graph, Room* room)
+bool doesGraphContainRoom(Graph* graph, const char* roomName)
 {
     bool result = false;
 
     for (size_t i = 0; i < graph->numberOfRooms; i++)
     {
         // Compare rooms to see if they're the same
-        if (graph->roomsArray[i].roomName == room->roomName)
+        if (graph->roomsArray[i].roomName == roomName)
         {
             result = true;
             break;
@@ -50,7 +50,7 @@ void destroyGraph(Graph* graph)
 {
     for (size_t i = 0; i < graph->numberOfRooms; i++)
     {
-        //destroyRoom(&graph->roomsArray[i]);
+        destroyRoom(&graph->roomsArray[i]);
     }
 
     free(graph);

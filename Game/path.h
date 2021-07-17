@@ -8,7 +8,7 @@
 typedef struct Path_
 {
 	int   stepCount;
-	Room  room;
+	char* roomName;
 	Path* nextRoom;
 }   Path;
 
@@ -17,7 +17,7 @@ typedef struct Path_
 Path* initializePath();
 
 // Function for adding Room to path
-Path* addRoomToPath(Path* path, Room* room);
+Path* addRoomToPath(Path* path, const char* roomName);
 
 // Function for getting the step count of Path path
 int getStepCount(const Path* path);
@@ -25,5 +25,6 @@ int getStepCount(const Path* path);
 // Function for printing the path so far
 void printPathTaken(const Path* path);
 
+// Function for destroying Path path
 void destroyPath(Path* path);
 
