@@ -46,6 +46,22 @@ bool doesGraphContainRoom(Graph* graph, const char* roomName)
     return result;
 }  // end of doesGraphContainRoom()
 
+Room getStartRoomFromGraph(Graph* graph)
+{
+    Room room = { "", UNKNOWN_ROOM, 0, NULL};
+
+    for (size_t i = 0; i < graph->numberOfRooms; i++)
+    {
+        if (graph->roomsArray[i].roomType == START_ROOM)
+        {
+            room = graph->roomsArray[i];
+            break;
+        }
+    }
+
+    return room;
+}
+
 void destroyGraph(Graph* graph)
 {
     for (size_t i = 0; i < graph->numberOfRooms; i++)

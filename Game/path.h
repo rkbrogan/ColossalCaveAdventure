@@ -9,7 +9,7 @@ typedef struct Path_
 {
 	int   stepCount;
 	char* roomName;
-	Path* nextRoom;
+	struct Path_* nextRoom;
 }   Path;
 
 

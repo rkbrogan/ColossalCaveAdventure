@@ -31,27 +31,11 @@ RoomType determineRoomType(char* roomType)
     }
     else
     {
-        // Add another type and return error?
+        type = UNKNOWN_ROOM;
     }
     
     return type;
 }
-
-// Room getStartRoom(Graph* graph)
-// {
-//     Room room;
-
-//     for (size_t i = 0; i < graph->numberOfRooms; i++)
-//     {
-//         if (graph->roomsArray[i].roomType == START_ROOM)
-//         {
-//             room = graph->roomsArray[i];
-//             break;
-//         }
-//     }
-
-//     return room;
-// }
 
 // Room getRoomByName(Graph* graph, const char* roomName)
 // {
