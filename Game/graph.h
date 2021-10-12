@@ -1,32 +1,18 @@
 #pragma once
+#include "Room.h"
 
-#include "room.h"
-
-#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct Graph_
 {
-	size_t numberOfRooms;
-	Room   roomsArray[];
+	const Room*   startRoom;
+	size_t        numberOfRooms;
+	Room          roomsArray[];
 } Graph;
 
-
-// Function for creating and returning a new Graph object
-Graph* newGraph(size_t numberOfRooms);
-/*		numberOfRooms = number of files
-*		Iterate through each file
-*		If start room discovered, flag it and mark its location	
-*/ 
-
-// Function for determining if Graph graph contains const char* roomName
-bool doesGraphContainRoom(Graph* graph, const char* roomName);
-
-// Function that finds a Room with a type of START_ROOM from RoomsArray listOfRooms
-Room getStartRoomFromGraph(Graph* graph);
-
-//Function that returns a Room from graph named char* roomName
-// Room getRoomByName(Graph* graph, const char* roomName);
-
-// Function for destroying graph
-void destroyGraph(Graph* graph);
+const Graph*	createGraph(const char* dirPath);
+const Room*		getStartRoom(const Graph* graph);
+Room*			findRoom(const Graph* graph, const char* name);
+size_t			getNumberOfRooms(const Graph* graph);
+void			destroyGraph(const Graph* graph);

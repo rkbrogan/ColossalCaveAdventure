@@ -1,40 +1,48 @@
 #pragma once
-
-#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-// Enum that represents type of Room
+#include "DynamicArray.h"
+// #include "Graph.h"
+typedef struct Graph_ Graph;
+
 typedef enum RoomType_
 {
-	UNKNOWN_ROOM,
-	START_ROOM,
-	MID_ROOM,
-	END_ROOM
-}	RoomType;
+    UNKNOWN_ROOM,
+    START_ROOM,
+    MID_ROOM,
+    END_ROOM
+} RoomType;
 
-// Pointer to a Room pointer
-typedef struct Room_** RoomsArray;
 
-// Struct for a Room
 typedef struct Room_
 {
-	char*       roomName;
-	RoomType    roomType;
-	size_t	    numberOfConnections;
-	RoomsArray	connections;
-}	Room;
+    char* roomName;
+    RoomType      roomType;
+    DynamicArray* connections;
+} Room;
 
-//// Function that creates an array of rooms from a provided path to the directory of rooms
-//RoomsArray createListOfRooms(char* roomsPath);
+// typedef struct _GraphType* GraphType;
 
-// Function that initializes room and defines all of its members
-Room* initializeRoom(Room* room, RoomType roomType, const char* roomName, const size_t numberOfConnections);
+// typedef struct _GraphType {
+//   const Room*   startRoom;
+//   size_t        numberOfRooms;
+//   Room          roomsArray[];
+// } GraphType;
 
-// Function for determining the RoomType of a room
-RoomType determineRoomType(char* roomType);
+/*
+  Tasks:
+    -  Parse room for room name
+    -  See if room already exists in graph->roomsArray
+    -  Create connections array
+    -  Add each connection to connections array.
+    -  Parse for room type
+*/
 
-// Function that prints the info from Room room
-void printRoomInfo(Room* room);
-
-// Function that destroys a Room pointer
-void destroyRoom(Room* room);
+Room*       initializeRoom(Room* room, Graph* graph, FILE* fp);
+void        addConnection(Room* room, const Room* connection);
+const char* getRoomName(const Room* room);
+void        setRoomName(Room* room, const char* name);
+RoomType    getRoomType(const Room* room);
+void        setRoomType(Room* room, const char* type);
+void        destroyRoom(Room* room);
