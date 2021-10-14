@@ -8,6 +8,7 @@ Directory* openDirectory(const char* dirPath)
 {
 	Directory* directory = malloc(sizeof(Directory));
 	assert(directory);
+  strncpy(directory->name, dirPath, NAME_MAX-1);
 #if defined(_WIN64) || defined(_WIN32)
   directory->hFind = NULL;
   

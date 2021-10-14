@@ -7,9 +7,11 @@
 	#include "dirent.h"
 #endif
 
+#define NAME_MAX 1024
+
 typedef struct DirectoryEntry_
 {
-	char name[1024];
+	char name[NAME_MAX];
 	int creationTimeStamp;
 #if defined(_WIN64) || defined(_WIN32)
   HANDLE hFind;

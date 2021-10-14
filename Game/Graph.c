@@ -138,11 +138,13 @@ const Room* getStartRoom(const Graph* graph)
 	return graph->startRoom;
 }
 
+// Function for returning the number of rooms
 size_t getNumberOfRooms(const Graph* graph)
 {
 	return graph->numberOfRooms;
 }
 
+// Function for destroying a Graph pointer
 void destroyGraph(const Graph* graph)
 {
 	free((void*)graph);
