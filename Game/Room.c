@@ -7,8 +7,9 @@
 #include <string.h>
 
 #define MAX_ROOM_NAME 25
+#define MAX_ROOM_TYPE 15
 
-extern char* strdup(const char*);
+//extern char* strdup(const char*);
 
 
 Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
@@ -20,27 +21,27 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   room->connections = create(5);
 
   // fscanf get room name
-  fscanf(fp, "ROOM NAME:  %s\n", temp);
+  fscanf_s(fp, "ROOM NAME:  %s\n", temp, 1024);
   
   // See if Room name already exist in graph
   Room* r = findRoom(graph, temp);
   if( getRoomName(r) == NULL) {
-      setRoomName(r, strdup(temp));
+      setRoomName(r, _strdup(temp));
   }
 
   
   // fscanf loop and get all connections
-  char connName[15];
+  char connName[MAX_ROOM_NAME];
   int connNumber;
 
   // Handle the connections
-  while(fscanf(fp, "CONNECTION %d:  %s\n", &connNumber, connName) == 2)
+  while(fscanf_s(fp, "CONNECTION %d:  %s\n", &connNumber, connName, MAX_ROOM_NAME) == 2)
   {
     // Search graph to see if room pointer exist
     Room* c = findRoom(graph, connName);
 
     if( getRoomName(c) == NULL) {
-        setRoomName(c, strdup(connName));
+        setRoomName(c, _strdup(connName));
     }
 
     // Add connection to room
@@ -48,9 +49,9 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   }
 
   // Parse for room type
-  char roomType[15];
+  char roomType[MAX_ROOM_TYPE];
   
-  fscanf(fp, "ROOM TYPE:  %s", roomType);
+  fscanf_s(fp, "ROOM TYPE:  %s", roomType, MAX_ROOM_TYPE);
 
   // Set room type
   setRoomType(room, roomType);
