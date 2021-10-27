@@ -8,26 +8,46 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BUFFER_SIZE 1024
+
 #if defined(_WIN64) || defined(_WIN32)
 #else
 	#include <dirent.h>
 #endif
 
-static bool isRoomFile(struct dirent* entry)
+// Function that checks if a file is a Room file
+static bool isRoomFile(DirectoryEntry* dirEntry)
 {
-	return (entry != NULL && entry->d_type == DT_REG &&
-		strcmp(&entry->d_name[strlen(entry->d_name) - 5], "_room") == 0);
+	bool isAFile = false;
+	const char* fileName = NULL;
+
+	if (dirEntry != NULL)
+	{
+#if defined(_WIN64) || defined(_WIN32)
+		isAFile = dirEntry->fdFile.dwFileAttributes & FILE_ATTRIBUTE_NORMAL;
+		fileName = dirEntry->fdFile.cFileName;
+#else // LINUX
+		if (dirEntry->entry != NULL)
+		{
+			isAFile = dirEntry->entry->d_type == DT_REG;
+			fileName = dirEntry->entry->d_name;
+		}
+#endif
+	}
+
+	return isAFile && strcmp(&fileName[strlen(fileName - 5)], "_room");
 }
 
+
 // Function that counts and returns the number of room files for the graph
-static size_t getNumberOfRoomFiles(DIR* directory)
+static size_t getNumberOfRoomFiles(Directory* directory)
 {
 	size_t numberOfFiles = 0;
-	struct dirent* entry;
+	DirectoryEntry* dirEntry;
 
-	while ((entry = readdir(directory)) != NULL)
+	while ((dirEntry = readDirectory(directory)) != NULL)
 	{
-		if (isRoomFile(entry))
+		if (isRoomFile(dirEntry))
 		{
 			numberOfFiles++;
 		}
@@ -75,7 +95,7 @@ const Graph* createGraph(const char* dirPath)
 {
 	Graph* graph;
 
-	struct dirent* entry;
+	DirectoryEntry* dirEntry;
 
 	/*DIR* directory = opendir(dirPath);
 
@@ -89,7 +109,7 @@ const Graph* createGraph(const char* dirPath)
 	assert(directory);
 
 	// Get number of rooms
-	size_t numberOfRooms = getNumberOfRoomFiles(directory->dir);
+	size_t numberOfRooms = getNumberOfRoomFiles(directory);
 
 	// Allocate memory for Graph
 	graph = malloc(sizeof(Graph) + sizeof(Room) * numberOfRooms);
@@ -98,17 +118,39 @@ const Graph* createGraph(const char* dirPath)
 	graph->numberOfRooms = numberOfRooms;
 
 	// Reset position of directory pointer
-	rewinddir(directory->dir);
+	rewindDirectory(directory);
 
 	size_t itr = 0;
 	// Create rooms
-	while ((entry = readdir(directory)))
+	while ((dirEntry = readDirectory(directory)))
 	{
-		if (isRoomFile(entry))
+		if (isRoomFile(dirEntry))
 		{
-			char buffer[1024] = { 0 };
-			sprintf(buffer, "%s/%s", dirPath, entry->d_name);
-			FILE* fp = fopen(buffer, "r");
+			// TODO check max size of linux path
+			char buffer[BUFFER_SIZE] = { 0 };
+			const char* fileName = NULL;
+
+#if defined(_WIN64) || defined(_WIN32)
+			fileName = dirEntry->fdFile.cFileName;
+#else
+			fileName = dirEntry->entry->d_name;
+#endif
+			assert(fileName);
+
+			sprintf_s(buffer, BUFFER_SIZE, "%s/%s", dirPath, fileName);
+			//FILE* fp = fopen(buffer, "r");
+
+			FILE* fp;
+			errno_t err;
+
+			// Open file
+			if ((err = fopen_s(&fp, fileName, "r")) != 0)
+			{
+				return ERROR;
+			}
+
+			// TODO: Check if this works for fp.
+
 			Room* newRoom = initializeRoom(&graph->roomsArray[itr], graph, fp);
 			itr++;
 			fclose(fp);
@@ -116,7 +158,6 @@ const Graph* createGraph(const char* dirPath)
 	}
 
 	// Close directory
-	//closedir(directory);
 	closeDirectory(directory);
 
 	// Search for start room

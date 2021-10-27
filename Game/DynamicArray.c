@@ -13,8 +13,11 @@
 DynamicArray* create(size_t size)
 {
 	size_t capacity = size * 2;
+#if defined(_WIN64) || defined(_WIN32)
+	DynamicArray* da = malloc(sizeof(DynamicArray) + sizeof(void*) * capacity);
+#else
 	DynamicArray* da = malloc(sizeof(DynamicArray) + sizeof(void* [capacity]));
-
+#endif
 	assert(da);
 
 	da->size = size;
@@ -61,9 +64,15 @@ DynamicArray* put(DynamicArray* da, size_t index, void* data)
 			size_t tempCapacity = da->capacity;
 			size_t tempSize = da->size;
 
-			DynamicArray* daTemp = realloc(da, sizeof(DynamicArray) + sizeof(void* [da->capacity]));
+			// Using windows version
+			DynamicArray* daTemp = realloc(da, sizeof(DynamicArray) + sizeof(void*) * da->capacity);
 
 			assert(daTemp);
+
+			if (daTemp == NULL)
+			{
+				exit(1);
+			}
 
 			da = daTemp;
 		}

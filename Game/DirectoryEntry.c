@@ -7,27 +7,30 @@
 Directory* openDirectory(const char* dirPath)
 {
 	Directory* directory = malloc(sizeof(Directory));
-	assert(directory);
-  strncpy(directory->name, dirPath, NAME_MAX-1);
+	if (directory != NULL)
+	{
+		strncpy_s(directory->name, sizeof(directory->name), dirPath, NAME_MAX - 1);
+
 #if defined(_WIN64) || defined(_WIN32)
-  directory->hFind = NULL;
-  
-  if ((hFind = FindFirstFile(dirPath, &directory->fdFile)) == INVALID_HANDLE_VALUE)
-  {
-    // Path not found
-    return NULL;
-  }
+		directory->hFind = NULL;
+
+		if ((directory->hFind = FindFirstFileA(dirPath, &directory->fdFile)) == INVALID_HANDLE_VALUE)
+		{
+			// Path not found
+			return NULL;
+		}
 
 #else
-	directory->dir = opendir(dirPath);
-	
-	if (directory->dir == NULL)
-	{
-		free(directory);
-		return NULL;
+		directory->dir = opendir(dirPath);
+
+		if (directory->dir == NULL)
+		{
+			free(directory);
+			return NULL;
+		}
+#endif
 	}
 
-#endif
 	return directory;
 }
 
@@ -35,11 +38,11 @@ Directory* openDirectory(const char* dirPath)
 /*Close directory*/
 bool closeDirectory(Directory* directory)
 {
-  assert(directory);
+	assert(directory);
 	assert(directory->dir);
 
 #if defined(_WIN64) || defined(_WIN32)
-  FindClose(directory->hFind);
+	FindClose(directory->hFind);
 #else
 	closedir(directory->dir);
 	free(directory);
@@ -52,30 +55,33 @@ bool closeDirectory(Directory* directory)
 /* Function that reads a directory that's specified in Directory pointer. */
 DirectoryEntry* readDirectory(Directory* directory)
 {
-  DirectoryEntry* dirEntry;
+	DirectoryEntry* dirEntry = malloc(sizeof(DirectoryEntry));
+	if (dirEntry != NULL)
+	{
 #if defined (_WIN64) || defined (_WIN32)
-  dirEntry->findNextFile = FindNextFile(directory->hFind, directory->fdFile);
+		dirEntry->findNextFile = FindNextFileA(directory->hFind, &directory->fdFile);
 #else
-  dirEntry->entry = readdir(directory->dir);
+		dirEntry->entry = readdir(directory->dir);
 #endif
+	}
 
-  return dirEntry;
+	return dirEntry;
 }
 
 
 /* Function that rewinds Directory pointer. */
 bool rewindDirectory(Directory* directory)
 {
-  bool result = true;
+	bool result = true;
 #if defined (_WIN64) || defined (_WIN32)
-  // Not sure if there is a way to do this
-  if ((directory->hFind = FindFirstFile(directory->dirPath, directory->fdFile)) == INVALID_HANDLE_VALUE)
-  {
-    result = false;
-  }
+	// Not sure if there is a way to do this
+	if ((directory->hFind = FindFirstFileA(directory->name, &directory->fdFile)) == INVALID_HANDLE_VALUE)
+	{
+		result = false;
+	}
 #else
-  rewinddir(directory->dir);
+	rewinddir(directory->dir);
 #endif
 
-  return result;
+	return result;
 }

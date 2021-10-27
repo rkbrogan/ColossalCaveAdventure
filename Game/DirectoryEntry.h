@@ -7,7 +7,7 @@
 	#include "dirent.h"
 #endif
 
-#define NAME_MAX 1024
+#define NAME_MAX MAX_PATH
 
 typedef struct DirectoryEntry_
 {
@@ -15,11 +15,11 @@ typedef struct DirectoryEntry_
 	int creationTimeStamp;
 #if defined(_WIN64) || defined(_WIN32)
   HANDLE hFind;
-  WIN32_FIND_DATA fdFile;
+  WIN32_FIND_DATAA fdFile;
   bool findNextFile;
-#else
+#else // LINUX
 	DIR* dir;
-  struct dirent* entry;
+	struct dirent* entry;
 #endif
 } DirectoryEntry;
 
