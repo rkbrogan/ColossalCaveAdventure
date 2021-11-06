@@ -39,11 +39,11 @@ Directory* openDirectory(const char* dirPath)
 bool closeDirectory(Directory* directory)
 {
 	assert(directory);
-	assert(directory->dir);
-
+	
 #if defined(_WIN64) || defined(_WIN32)
 	FindClose(directory->hFind);
 #else
+	assert(directory->dir);
 	closedir(directory->dir);
 	free(directory);
 #endif
@@ -55,14 +55,30 @@ bool closeDirectory(Directory* directory)
 /* Function that reads a directory that's specified in Directory pointer. */
 DirectoryEntry* readDirectory(Directory* directory)
 {
+	char* sourceName;
+	char* destName;
+	size_t destLength;
+
 	DirectoryEntry* dirEntry = malloc(sizeof(DirectoryEntry));
 	if (dirEntry != NULL)
 	{
 #if defined (_WIN64) || defined (_WIN32)
-		dirEntry->findNextFile = FindNextFileA(directory->hFind, &directory->fdFile);
+		dirEntry->findNextFile = FindNextFileA(directory->hFind, &dirEntry->fdFile);
+		sourceName = dirEntry->fdFile.cFileName;
+		destName = dirEntry->name;
+		destLength = sizeof(dirEntry->name);
 #else
 		dirEntry->entry = readdir(directory->dir);
+		// TODO:
+		sourceName = NULL;
+		destName = NULL;
+		destLength = -1;
 #endif
+		assert(sourceName);
+		assert(destName);
+		assert(destLength != -1);
+
+		strcpy_s(destName, destLength, sourceName);
 	}
 
 	return dirEntry;

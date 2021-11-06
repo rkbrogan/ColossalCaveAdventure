@@ -12,20 +12,20 @@
 static MunitResult initialize_room(const MunitParameter params[], void* data)
 {
 	// Arrange
-  const Graph* graph = createGraph("./testRoomsDirectory");
+	const Graph* graph = createGraph("./testRoomsDirectory");
 
 	// Assume
-  Room room;
-  room.roomName = "CENTERS";
-  room.roomType = MID_ROOM;
-  
-  munit_assert_not_null(graph);
+	Room room;
+	room.roomName = "CENTERS";
+	room.roomType = MID_ROOM;
 
-  // Compare contents of room to known values
-  
+	munit_assert_not_null(graph);
 
-  // Clean
-  destroyGraph(graph);
+	// Compare contents of room to known values
+
+
+	// Clean
+	destroyGraph(graph);
 
 	return MUNIT_OK;
 }
@@ -33,67 +33,64 @@ static MunitResult initialize_room(const MunitParameter params[], void* data)
 
 static MunitResult get_room_name(const MunitParameter params[], void* data)
 {
-  // Arrange
-  const Graph* graph = createGraph("./testRoomsDirectory");
+	// Arrange
+	const Graph* graph = createGraph("./testRoomsDirectory");
 
-  char roomName[] = "PROBLEM";
-  FILE* fp;
-  // TODO: Do file stuff
+	char roomName[] = "PROBLEM";
 
-  Room* room = malloc(sizeof(Room));
-  room = initializeRoom(room, (Graph*) graph, fp);  // TODO: remove cast when rewritten
-  
-  // Act
-  const char* retName = getRoomName(room);
-  
-  // Assume
+	Room* room = findRoom(graph, roomName);
 
-  // Assert
-  munit_assert_string_equal(roomName, retName);
+	// Act
+	const char* retName = getRoomName(room);
 
-  // Clean
-  destroyRoom(room);
-  destroyGraph(graph);
+	// Assume
 
-  return MUNIT_OK;
+	// Assert
+	munit_assert_string_equal(roomName, retName);
+
+	// Clean
+	destroyRoom(room);
+	destroyGraph(graph);
+
+	return MUNIT_OK;
 }
 
 
 static MunitResult get_room_type(const MunitParameter params[], void* data)
 {
-  // Arrange
-  const Graph* graph = createGraph("./testRoomsDirectory");
+	// Arrange
+	const Graph* graph = createGraph("./testRoomsDirectory");
 
-  RoomType type = START_ROOM;
-  FILE* fp;
-  // TODO: Do file stuff
+	RoomType type = START_ROOM;
+	FILE* fp;
+	// TODO: Do file stuff
 
-  
 
-  Room* room = malloc(sizeof(Room));
-  room = initializeRoom(room, (Graph*)graph, fp);
-  
-  // Act
-  RoomType retType = getRoomType(room);
-  
-  // Assume
 
-  // Assert
-  munit_assert_int(type, ==, retType);
+	Room* room = malloc(sizeof(Room));
+	room = initializeRoom(room, (Graph*)graph, fp);
 
-  // Clean
-  destroyRoom(room);
-  destroyGraph(graph);
-  return MUNIT_OK;
+	// Act
+	RoomType retType = getRoomType(room);
+
+	// Assume
+
+	// Assert
+	munit_assert_int(type, == , retType);
+
+	// Clean
+	destroyRoom(room);
+	destroyGraph(graph);
+	return MUNIT_OK;
 }
 
 
 static MunitResult destroy_room(const MunitParameter params[], void* data)
 {
-  return MUNIT_OK;
+	return MUNIT_OK;
 }
 
-MunitTest room_tests[] = 
+MunitTest room_tests[] =
 {
   TEST(initialize_room),
   TEST(get_room_name),

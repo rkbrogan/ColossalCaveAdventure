@@ -114,6 +114,11 @@ const Graph* createGraph(const char* dirPath)
 	// Allocate memory for Graph
 	graph = malloc(sizeof(Graph) + sizeof(Room) * numberOfRooms);
 
+	if (graph == NULL)
+	{
+		return NULL;
+	}
+
 	// Store the numberOfRooms
 	graph->numberOfRooms = numberOfRooms;
 
@@ -138,7 +143,6 @@ const Graph* createGraph(const char* dirPath)
 			assert(fileName);
 
 			sprintf_s(buffer, BUFFER_SIZE, "%s/%s", dirPath, fileName);
-			//FILE* fp = fopen(buffer, "r");
 
 			FILE* fp;
 			errno_t err;

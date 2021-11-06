@@ -166,12 +166,14 @@ static MunitResult get_value_after_expansion(const MunitParameter params[], void
 	// Arrange
   int val = 99;
   size_t testSize = 10;
-  size_t testSizeOffset = testSize - 1;
+  size_t index = testSize - 1;  // 9
   DynamicArray* da = create(5);
 
+  DynamicArray* da_test = put(da, 1, &val);
+
   // Act
-  DynamicArray* da1 = put(da, testSizeOffset, &val);
-  int* retValPtr = (int*) get(da, testSizeOffset);
+  DynamicArray* da1 = put(da, index, &val);
+  int* retValPtr = (int*) get(da, index);
   
   // Assume
   munit_assert_not_null(retValPtr);
