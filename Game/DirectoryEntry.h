@@ -15,7 +15,7 @@ typedef struct DirectoryEntry_
 	int creationTimeStamp;
 #if defined(_WIN64) || defined(_WIN32)
 	HANDLE hFind;
-	WIN32_FIND_DATAA fdFile;
+	WIN32_FIND_DATAA FindFileData;
 	bool findNextFile;
 #else // LINUX
 	DIR* dir;
@@ -30,6 +30,3 @@ Directory*		openDirectory(const char* dirPath);
 bool			closeDirectory(Directory* directory);
 DirectoryEntry* readDirectory(Directory* directory);
 bool			rewindDirectory(Directory* directory);
-
-
-// https://stackoverflow.com/questions/2314542/listing-directory-contents-using-c-and-windows

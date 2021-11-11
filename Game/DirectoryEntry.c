@@ -10,11 +10,11 @@ Directory* openDirectory(const char* dirPath)
 	if (directory != NULL)
 	{
 		strncpy_s(directory->name, sizeof(directory->name), dirPath, NAME_MAX - 1);
-
+		strncat_s(directory->name, sizeof(directory->name), "\\*", 3);
 #if defined(_WIN64) || defined(_WIN32)
 		directory->hFind = NULL;
 
-		if ((directory->hFind = FindFirstFileA(dirPath, &directory->fdFile)) == INVALID_HANDLE_VALUE)
+		if ((directory->hFind = FindFirstFileA(directory->name, &directory->FindFileData)) == INVALID_HANDLE_VALUE)
 		{
 			// Path not found
 			return NULL;
@@ -63,16 +63,22 @@ DirectoryEntry* readDirectory(Directory* directory)
 	if (dirEntry != NULL)
 	{
 #if defined (_WIN64) || defined (_WIN32)
-		dirEntry->findNextFile = FindNextFileA(directory->hFind, &dirEntry->fdFile);
-		sourceName = dirEntry->fdFile.cFileName;
+		dirEntry->findNextFile = FindNextFileA(directory->hFind, &dirEntry->FindFileData);
+
+		if (dirEntry->findNextFile == false)
+		{
+			free(dirEntry);
+			return NULL;
+		}
+		sourceName = dirEntry->FindFileData.cFileName;
 		destName = dirEntry->name;
 		destLength = sizeof(dirEntry->name);
 #else
 		dirEntry->entry = readdir(directory->dir);
-		// TODO:
-		sourceName = NULL;
-		destName = NULL;
-		destLength = -1;
+		// TODO: Check if readdir is end of directory, 
+		sourceName = dirEntry->entry->d_name;
+		destName = dirEntry->name;
+		destLength = sizeof(dirEntry->name);
 #endif
 		assert(sourceName);
 		assert(destName);
@@ -91,7 +97,7 @@ bool rewindDirectory(Directory* directory)
 	bool result = true;
 #if defined (_WIN64) || defined (_WIN32)
 	// Not sure if there is a way to do this
-	if ((directory->hFind = FindFirstFileA(directory->name, &directory->fdFile)) == INVALID_HANDLE_VALUE)
+	if ((directory->hFind = FindFirstFileA(directory->name, &directory->FindFileData)) == INVALID_HANDLE_VALUE)
 	{
 		result = false;
 	}

@@ -18,6 +18,7 @@ static MunitResult create_graph_5_files(const MunitParameter params[], void* dat
 	// Act
 	graph = createGraph(roomsDirPath);
 
+	// TODO: createGraph returns NULL
 	// Assume
 	munit_assert_not_null(graph);
 

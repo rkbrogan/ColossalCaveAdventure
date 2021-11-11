@@ -24,8 +24,8 @@ static bool isRoomFile(DirectoryEntry* dirEntry)
 	if (dirEntry != NULL)
 	{
 #if defined(_WIN64) || defined(_WIN32)
-		isAFile = dirEntry->fdFile.dwFileAttributes & FILE_ATTRIBUTE_NORMAL;
-		fileName = dirEntry->fdFile.cFileName;
+		isAFile = !(dirEntry->FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+		fileName = dirEntry->FindFileData.cFileName;
 #else // LINUX
 		if (dirEntry->entry != NULL)
 		{
@@ -136,7 +136,7 @@ const Graph* createGraph(const char* dirPath)
 			const char* fileName = NULL;
 
 #if defined(_WIN64) || defined(_WIN32)
-			fileName = dirEntry->fdFile.cFileName;
+			fileName = dirEntry->FindFileData.cFileName;
 #else
 			fileName = dirEntry->entry->d_name;
 #endif
