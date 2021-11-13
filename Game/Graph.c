@@ -61,32 +61,18 @@ Room* findRoom(const Graph* graph, const char* name)
 {
 	Room* room = NULL;
 
-	// for (size_t i = 0; i < graph->numberOfRooms; i++)
-	// {
-	//   if (strcmp(graph->roomsArray[i].roomName, name) == 0 || graph->roomsArray[i].roomName == NULL)
-	//   {
-	//     room = (Room*)&graph->roomsArray[i]; 
-	//     break;
-	//   }
-	// }
-
 	for (size_t i = 0; i < graph->numberOfRooms; i++)
 	{
-		if (graph->roomsArray[i].roomName == NULL)
+		// Find first empty room or room with matching roomName
+		if ((graph->roomsArray[i].roomName == NULL) || (strcmp(graph->roomsArray[i].roomName, name) == 0))
 		{
 			room = (Room*)&graph->roomsArray[i];
 			break;
-		}
-		else if (strcmp(graph->roomsArray[i].roomName, name) == 0)
-		{
-			room = (Room*)&graph->roomsArray[i];
-			break;
-		}
-		else
-		{
-			// Not the room we are looking for
 		}
 	}
+
+	assert(room != NULL);
+
 	return room;
 }
 
@@ -112,7 +98,7 @@ const Graph* createGraph(const char* dirPath)
 	size_t numberOfRooms = getNumberOfRoomFiles(directory);
 
 	// Allocate memory for Graph
-	graph = malloc(sizeof(Graph) + sizeof(Room) * numberOfRooms);
+	graph = calloc(1, (sizeof(Graph) + sizeof(Room) * numberOfRooms));
 
 	if (graph == NULL)
 	{
@@ -148,7 +134,7 @@ const Graph* createGraph(const char* dirPath)
 			errno_t err;
 
 			// Open file
-			if ((err = fopen_s(&fp, fileName, "r")) != 0)
+			if ((err = fopen_s(&fp, buffer, "r")) != 0)
 			{
 				return ERROR;
 			}

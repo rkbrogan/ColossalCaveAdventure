@@ -105,7 +105,8 @@ void setRoomType(Room* room, const char* type)
   }
 }
 
+// TODO: Delete this
 void destroyRoom(Room* room)
 {
-  free(room);
+  free(room->roomName);
 }
