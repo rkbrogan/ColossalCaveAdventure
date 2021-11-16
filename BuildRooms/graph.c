@@ -3,10 +3,19 @@
 #include "wordcollection.h"
 
 #include <assert.h>
-#include <direct.h>
-#include <process.h>
 #include <stdio.h>
 #include <time.h>
+
+#if defined(_WIN64) || defined(_WIN32)
+    #include <direct.h>
+    #include <process.h>
+    #define MKDIR(dir)  _mkdir(dir)
+    #define GETPID()    _getpid()
+#elif defined(__APPLE__)
+// Add proper headers here
+#else
+#error "Unsupported OS"
+#endif
 
 
 Graph* newGraph(size_t numberOfRooms, size_t minConnections, size_t maxConnections)
@@ -157,10 +166,10 @@ void writeGraphFiles(const Graph* graph)
     // Create a buffer that will be used for the directory name
     char buffer[_MAX_PATH];
 
-    sprintf_s(buffer, sizeof(buffer), "riley.rooms.%d", _getpid());
+    sprintf_s(buffer, sizeof(buffer), "riley.rooms.%d", GETPID());
 
     // make directory
-    int dirCheck = _mkdir(buffer);
+    int dirCheck = MKDIR(buffer);
 
     // Iterate through Graph graph's rooms and write a file for each on in the newly created directory
     for (size_t i = 0; i < graph->numberOfRooms; i++)
