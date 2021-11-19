@@ -7,6 +7,7 @@
 typedef const DynamicArray* Path;
 
 Path   createPath();
+Room*  getCurrentRoom(Path path);
 void   printPathArray(Path path);
 void   addRoomToPath(Path path, const Room* room);
 void   destroyPath(Path path);

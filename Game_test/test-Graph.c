@@ -18,12 +18,11 @@ static MunitResult create_graph_5_files(const MunitParameter params[], void* dat
 	// Act
 	graph = createGraph(roomsDirPath);
 
-	// TODO: createGraph returns NULL
 	// Assume
 	munit_assert_not_null(graph);
 
 	// Assert
-	munit_assert_size(5, == , getNumberOfRooms(graph));
+	munit_assert_size(5, ==, getNumberOfRooms(graph));
 
 	// Clean
 	destroyGraph(graph);

@@ -24,6 +24,11 @@ void addRoomToPath(Path path, const Room* room)
 	put((DynamicArray*)path, size((DynamicArray*)path), room);
 }
 
+const char* getCurrentRoomName(Path path)
+{
+	return NULL;
+}
+
 void destroyPath(Path path)
 {
 	destroy((DynamicArray*)path);
