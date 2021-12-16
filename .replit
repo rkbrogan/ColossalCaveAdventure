@@ -1,2 +1,2 @@
 language = "c"
-run = "TODO"
+run = "clear & clang-7 -pthread -lm -o GameTest -Iexternals/munit externals/munit/munit.c Game/*.c Game_test/*.c"

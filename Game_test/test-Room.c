@@ -1,7 +1,11 @@
 #include "test-Room.h"
-
+#if defined(_WIN64) || defined(_WIN32)
 #include "Room.h"
 #include "Graph.h"
+#else
+#include "../Game/Room.h"
+#include "../Game/Graph.h"
+#endif
 
 #include <stdlib.h>
 

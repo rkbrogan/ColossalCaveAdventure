@@ -5,8 +5,11 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define sprintf_s(buffer, BUFFER_SIZE, format, dirPath, fileName) sprintf(buffer, format, dirPath, fileName)
 
 #define BUFFER_SIZE 1024
 
@@ -131,15 +134,24 @@ const Graph* createGraph(const char* dirPath)
 			sprintf_s(buffer, BUFFER_SIZE, "%s/%s", dirPath, fileName);
 
 			FILE* fp;
+
+// TODO: Clean this up (139-154)
+#if defined(_WIN64) || defined(_WIN32)
 			errno_t err;
 
-			// Open file
-			if ((err = fopen_s(&fp, buffer, "r")) != 0)
+      if ((err = fopen_s(&fp, buffer, "r")) != 0)
 			{
-				return ERROR;
+				return NULL;
 			}
 
-			// TODO: Check if this works for fp.
+#else // LINUX
+      fp = fopen(buffer, "r");
+
+      if (!fp)
+      {
+        return NULL;
+      }
+#endif
 
 			Room* newRoom = initializeRoom(&graph->roomsArray[itr], graph, fp);
 			itr++;

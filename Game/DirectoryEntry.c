@@ -2,7 +2,6 @@
 
 #include <assert.h>
 
-
 /* Open directory from given path and return Directory pointer. */
 Directory* openDirectory(const char* dirPath)
 {

@@ -98,10 +98,9 @@ static MunitResult unitTestName(const MunitParameter params[], void* data)
 MunitTest path_tests[] =
 {
   TEST(initialize_path),
-  TEST(add_room_to_path),
   TEST(get_current_room_name_start),
   TEST(get_current_room_name_middle),
-  TEST(add_room_to_path),
-  TEST(destroy_path),
+  // TEST(add_room_to_path),
+  // TEST(destroy_path),
   {NULL}
 };

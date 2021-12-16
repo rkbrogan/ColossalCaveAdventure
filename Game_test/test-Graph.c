@@ -1,7 +1,9 @@
 #include "test-Graph.h"
-
+#if defined(_WIN64) || defined(_WIN32)
 #include "Graph.h"
-
+#else
+#include "../Game/Graph.h"
+#endif
 #include <stdlib.h>
 
 

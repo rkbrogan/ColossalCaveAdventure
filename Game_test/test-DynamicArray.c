@@ -1,7 +1,10 @@
 #include "test-DynamicArray.h"
 
+#if defined(_WIN64) || defined(_WIN32)
 #include "DynamicArray.h"
-
+#else
+#include "../Game/DynamicArray.h"
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 
