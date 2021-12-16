@@ -9,13 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define sprintf_s(buffer, BUFFER_SIZE, format, dirPath, fileName) sprintf(buffer, format, dirPath, fileName)
-
 #define BUFFER_SIZE 1024
 
 #if defined(_WIN64) || defined(_WIN32)
 #else
-	#include <dirent.h>
+#include <dirent.h>
+#define sprintf_s(buffer, BUFFER_SIZE, format, dirPath, fileName) sprintf(buffer, format, dirPath, fileName)
 #endif
 
 // Function that checks if a file is a Room file
@@ -135,22 +134,22 @@ const Graph* createGraph(const char* dirPath)
 
 			FILE* fp;
 
-// TODO: Clean this up (139-154)
+			// TODO: Clean this up (139-154)
 #if defined(_WIN64) || defined(_WIN32)
 			errno_t err;
 
-      if ((err = fopen_s(&fp, buffer, "r")) != 0)
+			if ((err = fopen_s(&fp, buffer, "r")) != 0)
 			{
 				return NULL;
 			}
 
 #else // LINUX
-      fp = fopen(buffer, "r");
+			fp = fopen(buffer, "r");
 
-      if (!fp)
-      {
-        return NULL;
-      }
+			if (!fp)
+			{
+				return NULL;
+			}
 #endif
 
 			Room* newRoom = initializeRoom(&graph->roomsArray[itr], graph, fp);
