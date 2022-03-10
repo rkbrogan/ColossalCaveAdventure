@@ -10,6 +10,7 @@ Directory* openDirectory(const char* dirPath)
 	{
 		strncpy_s(directory->name, sizeof(directory->name), dirPath, NAME_MAX - 1);
 		strncat_s(directory->name, sizeof(directory->name), "\\*", 3);
+
 #if defined(_WIN64) || defined(_WIN32)
 		directory->hFind = NULL;
 
@@ -38,7 +39,6 @@ Directory* openDirectory(const char* dirPath)
 bool closeDirectory(Directory* directory)
 {
 	assert(directory);
-	
 #if defined(_WIN64) || defined(_WIN32)
 	FindClose(directory->hFind);
 #else
@@ -47,6 +47,7 @@ bool closeDirectory(Directory* directory)
 	free(directory);
 #endif
 
+	free(directory);
 	return true;
 }
 
@@ -64,6 +65,7 @@ DirectoryEntry* readDirectory(Directory* directory)
 #if defined (_WIN64) || defined (_WIN32)
 		dirEntry->findNextFile = FindNextFileA(directory->hFind, &dirEntry->FindFileData);
 
+		// Error condition
 		if (dirEntry->findNextFile == false)
 		{
 			free(dirEntry);
@@ -94,8 +96,8 @@ DirectoryEntry* readDirectory(Directory* directory)
 bool rewindDirectory(Directory* directory)
 {
 	bool result = true;
+
 #if defined (_WIN64) || defined (_WIN32)
-	// Not sure if there is a way to do this
 	if ((directory->hFind = FindFirstFileA(directory->name, &directory->FindFileData)) == INVALID_HANDLE_VALUE)
 	{
 		result = false;

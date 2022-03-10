@@ -8,71 +8,68 @@
 
 static MunitResult initialize_path(const MunitParameter params[], void* data)
 {
-  // Arrange
-  // Act
-  Path path = createPath();
-  
-  // Assume
-  // TODO: Path starts with size 10
-  // Assert
-  munit_assert_uint(size(path), ==, 10);
-
-  // Clean
-  destroyPath(path);
-
-  return MUNIT_OK;
-}
-
-
-static MunitResult get_current_room_name_start(const MunitParameter params[], void* data)
-{
 	// Arrange
-  Path path = createPath();
-  Room room;
-  room.roomName = "STARTING";
-  room.roomType = START_ROOM;
-
-  // Act
-  addRoomToPath(path, &room);
-
-	// Assume
-  const char* retName = getCurrentRoomName(path);
+	Path path = createPath();
 
 	// Assert
-  munit_assert_string_equal(room.roomName, retName);
+	munit_assert_uint(size(path), == , 0);
 
-  // Clean
-  destroyPath(path);
+	// Clean
+	destroyPath(path);
 
 	return MUNIT_OK;
 }
 
 
-static MunitResult get_current_room_name_middle(const MunitParameter params[], void* data)
+static MunitResult get_current_room_name_of_path_one_room(const MunitParameter params[], void* data)
 {
 	// Arrange
-  Path path = createPath();
+	Path path = createPath();
+	Room room;
+	room.roomName = "STARTING";
+	room.roomType = START_ROOM;
 
-  Room roomStart;
-  roomStart.roomName = "STARTING";
-  roomStart.roomType = START_ROOM;
-
-  Room roomMiddle;
-  roomStart.roomName = "MIDDLE";
-  roomStart.roomType = MID_ROOM;
-
-  // Act
-  addRoomToPath(path, &roomStart);
-  addRoomToPath(path, &roomMiddle);
+	// Act
+	addRoomToPath(path, &room);
 
 	// Assume
-  const char* retName = getCurrentRoomName(path);
+	const char* retName = getCurrentRoomName(path);
 
 	// Assert
-  munit_assert_string_equal(roomMiddle.roomName, retName);
+	munit_assert_string_equal(room.roomName, retName);
 
-  // Clean
-  destroyPath(path);
+	// Clean
+	destroyPath(path);
+
+	return MUNIT_OK;
+}
+
+
+static MunitResult get_current_room_name_of_path_more_than_one_room(const MunitParameter params[], void* data)
+{
+	// Arrange
+	Path path = createPath();
+
+	Room roomStart;
+	roomStart.roomName = "STARTING";
+	roomStart.roomType = START_ROOM;
+
+	Room roomMiddle;
+	roomMiddle.roomName = "MIDDLE";
+	roomMiddle.roomType = MID_ROOM;
+
+	// Act
+	addRoomToPath(path, &roomStart);
+	addRoomToPath(path, &roomMiddle);
+
+	// Assume
+	const char* retName = getCurrentRoomName(path);
+
+	// Assert
+	munit_assert_string_equal(roomMiddle.roomName, retName);
+
+	// Clean
+	destroyPath(path);
 
 	return MUNIT_OK;
 }
@@ -98,8 +95,8 @@ static MunitResult unitTestName(const MunitParameter params[], void* data)
 MunitTest path_tests[] =
 {
   TEST(initialize_path),
-  TEST(get_current_room_name_start),
-  TEST(get_current_room_name_middle),
+  TEST(get_current_room_name_of_path_one_room),
+  TEST(get_current_room_name_of_path_more_than_one_room),
   // TEST(add_room_to_path),
   // TEST(destroy_path),
   {NULL}

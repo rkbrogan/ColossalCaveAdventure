@@ -207,6 +207,7 @@ static MunitResult get_size(const MunitParameter params[], void* data)
 
   // Act
   DynamicArray* da = create(testSize);
+  put(da, testSize - 1, &testSize);
 
   // Assume
   size_t retSize = size(da);
@@ -230,6 +231,7 @@ static MunitResult get_size_after_expansion(const MunitParameter params[], void*
   size_t newSize = 10;
   size_t newSizeOffset = newSize - 1;
   DynamicArray* da = create(initialSize);
+  put(da, initialSize - 1, &initialSize);
 
   // Pre Assert
   munit_assert_size(initialSize, ==, size(da));

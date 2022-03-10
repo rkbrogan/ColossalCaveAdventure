@@ -7,6 +7,7 @@
 #include "../Game/Graph.h"
 #endif
 
+#include <assert.h>
 #include <stdlib.h>
 
 
@@ -16,19 +17,44 @@
 static MunitResult initialize_room(const MunitParameter params[], void* data)
 {
 	// Arrange
-	const Graph* graph = createGraph("./testRoomsDirectory");
+	Graph* graph = calloc(1, (sizeof(Graph) + sizeof(Room) * 4));
+	munit_assert_not_null(graph);
+	graph->startRoom = &graph->roomsArray[0];
+	graph->numberOfRooms = 4;
+	Room* testRoom;
+	FILE* fp;
+	errno_t err = fopen_s(&fp, "./testRoomsDirectory/CENTERS_room", "r");
 
-	// Assume
-	Room room;
-	room.roomName = "CENTERS";
-	room.roomType = MID_ROOM;
+	// Act
+	testRoom = initializeRoom(&graph->roomsArray[0], graph, fp);
+
+	// Assert
+	munit_assert_ptr(testRoom, == , &graph->roomsArray[0]);
+	munit_assert_string_equal("CENTERS", testRoom->roomName);
+	munit_assert_int(MID_ROOM, == , testRoom->roomType);
 
 	munit_assert_not_null(graph);
 
-	// Compare contents of room to known values
-
-
 	// Clean
+	for (size_t i = 0; i < graph->numberOfRooms; i++)
+	{
+		const Room* temp = &graph->roomsArray[i];
+
+		assert(temp->roomName);
+
+		if (strcmp((char*)getRoomName(temp), "CENTERS") != 0)
+		{
+			if (temp != NULL) 
+			{
+				#pragma warning( push )
+				#pragma warning( disable : 6001 )
+				free(temp->roomName);
+				#pragma warning( pop )
+			}
+		}
+	}
+	graph->numberOfRooms = 1;
+	
 	destroyGraph(graph);
 
 	return MUNIT_OK;
@@ -53,8 +79,7 @@ static MunitResult get_room_name(const MunitParameter params[], void* data)
 	munit_assert_string_equal(roomName, retName);
 
 	// Clean
-	destroyRoom(room);
-	destroyGraph(graph);
+	destroyGraph((Graph*)graph);
 
 	return MUNIT_OK;
 }
@@ -63,34 +88,33 @@ static MunitResult get_room_name(const MunitParameter params[], void* data)
 static MunitResult get_room_type(const MunitParameter params[], void* data)
 {
 	// Arrange
-	const Graph* graph = createGraph("./testRoomsDirectory");
+	Graph* graph = calloc(1, (sizeof(Graph) + sizeof(Room) * 4));
+	munit_assert_not_null(graph);
+	graph->startRoom = &graph->roomsArray[0];
+	graph->numberOfRooms = 4;
 
-	RoomType type = START_ROOM;
 	FILE* fp;
-	// TODO: Do file stuff
-
-
-
-	Room* room = malloc(sizeof(Room));
-	room = initializeRoom(room, (Graph*)graph, fp);
+	errno_t err = fopen_s(&fp, "./testRoomsDirectory/CENTERS_room", "r");
 
 	// Act
-	RoomType retType = getRoomType(room);
-
-	// Assume
+	Room* testRoom = initializeRoom(&graph->roomsArray[0], graph, fp);
 
 	// Assert
-	munit_assert_int(type, == , retType);
+	munit_assert_int(MID_ROOM, == , testRoom->roomType);
 
+	munit_assert_not_null(graph);
+	 
 	// Clean
-	destroyRoom(room);
 	destroyGraph(graph);
+
 	return MUNIT_OK;
 }
 
 
 static MunitResult destroy_room(const MunitParameter params[], void* data)
 {
+	// We already test destroyRoom() by testing destroyGraph()
+	//	and by detecting memory leaks. 
 	return MUNIT_OK;
 }
 

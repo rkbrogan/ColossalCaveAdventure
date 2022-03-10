@@ -20,7 +20,7 @@ DynamicArray* create(size_t size)
 #endif
 	assert(da);
 
-	da->size = size;
+	da->size = 0;
 	da->capacity = capacity;
 
 	return da;
@@ -52,7 +52,6 @@ DynamicArray* put(DynamicArray* da, size_t index, void* data)
 	// Check if we need to grow the array
 	// index = 4, da->size = 5, da->capacity = 10
 	// index = 5, da->size = 5, da->capacity = 10     -> da-size = 6
-	// index = 6, da->size = 6, da->capacity = 10     -> da->size = 7
 	if (index >= da->size)
 	{
 		da->size = index + 1;

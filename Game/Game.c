@@ -19,7 +19,7 @@ const char* getMostRecentRoomsDirectory(const char* builtRoomsDirectory)
 int executeGame(const char* builtRoomsDirectory)
 {
 	// Find the most recent rooms directory
-	const char* roomsDirectoryPath = _strdup(getMostRecentRoomsDirectory);
+	const char* roomsDirectoryPath = _strdup(getMostRecentRoomsDirectory(builtRoomsDirectory));
 
 	// Create Graph of Rooms
 	const Graph* graph = NULL;
@@ -34,6 +34,7 @@ int executeGame(const char* builtRoomsDirectory)
 	// Add starting room to Path
 	addRoomToPath(path, getStartRoom(graph));
 
+	// Interact with user until game is over
 	while (true)
 	{
 		Room* currentRoom = getCurrentRoom(path);
@@ -42,18 +43,19 @@ int executeGame(const char* builtRoomsDirectory)
 		printf("POSSIBLE CONNECTIONS: ");
 
 		// Iterate through connections and print their room names
-		while (size_t i = 0; i < (currentRoom->connections->size - 1); i++)
+		for (size_t i = 0; i < (currentRoom->connections->size - 1); i++)
 		{
 			printf("%s, ", ((Room*)get(currentRoom->connections, i))->roomName);
 		}
 
 		// Print final connection's room name
-		printf("%s.\n", ((Room*)get(currentRoom->connections, i++))->roomName);
+		
 
 		// Prompt user where to go to next
 		printf("WHERE TO? >  ");
 
 		// scanf_s to get next room name from user
+
 	}
 }
 

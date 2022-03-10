@@ -29,7 +29,7 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   room->connections = create(5);
 
   // fscanf get room name
-  fscanf(fp, "ROOM NAME:  %s\n", temp);
+  fscanf_s(fp, "ROOM NAME:  %s\n", temp, 1024);
   
   // See if Room name already exist in graph
   Room* r = findRoom(graph, temp);
@@ -59,7 +59,10 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   // Parse for room type
   char roomType[MAX_ROOM_TYPE];
   
-  fscanf(fp, "ROOM TYPE:  %s", roomType);
+  if (fscanf(fp, "ROOM TYPE:  %s", roomType) != 1)
+  {
+      return NULL;
+  }
 
   // Set room type
   setRoomType(room, roomType);
@@ -113,8 +116,15 @@ void setRoomType(Room* room, const char* type)
   }
 }
 
-// TODO: Delete this
+
 void destroyRoom(Room* room)
 {
   free(room->roomName);
+  // Loop and free connections names
+  /*for (size_t i = 0; i < room->connections->size; i++)
+  {
+      free(get(room->connections, i));
+  }*/
+
+  destroy(room->connections);
 }

@@ -1,64 +1,36 @@
+#if defined(_DEBUG)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif // _DEBUG
+
+inline void initialize_debugging() {
+#if defined(_DEBUG)
+	// Send all reports to STDERR
+	// _CrtSetReportMode: https://goo.gl/DTCb8N
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
+	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+#endif // _DEBUG
+}
+
+inline void terminate_debugging() {
+#if defined(_DEBUG)
+	_CrtDumpMemoryLeaks();
+#endif // _DEBUG
+}
+
 
 #include "test-Graph.h"
 #include "test-Room.h"
+#include "test-Path.h"
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-// #define DA_SIZE 5
-
-// typedef struct Data_ {
-//     int data;
-// } Data;
-
-// int main(void) {
-//   // create
-//   // for(size_t i = )
-//   //   malloc / put / get / free
-//   // destroy
-
-
-//   DynamicArray* da = create(DA_SIZE);
-
-//   size_t tempSize = size(da) + 5;
-
-//   for(int i = 0; i < tempSize; i++)
-//   {
-//     // Set up temp
-//     Data* temp = malloc(sizeof(Data));
-//     temp->data = i*i;
-
-//     // Put data into dynamic array
-//     da = put(da, i, temp); 
-
-//     for(size_t j = 0; j <= i; j++)
-//     {
-//       Data* temp = get(da, j);
-//       printf("get [%zu] %d\n", j, temp->data);
-//     }
-//   }
-
-//   // Data* testData = da->array[0];
-//   Data* testData = malloc(sizeof(Data));
-//   testData->data = 2;
-
-//   da = put(da, 1, testData);
-
-//   printf("- %d\n", ((Data*)da->array[1])->data);
-
-//   // assert(10 == size(da));
-
-//   for(size_t i = 0; i < size(da); i++)
-//   {
-//     Data* temp = get(da, i);
-//     printf("get [%zu] %d\n", i, temp->data);
-//   }
-
-//   destroy(da);
-
-//   return 0;
-// }
 
 #include "test-DynamicArray.h"
 
@@ -69,6 +41,7 @@ static MunitSuite sub_suites[] = {
  {"dynamicArray ", dynamicArray_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE},
  {"graph ", graph_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE},
  {"room ", room_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE},
+ {"path ", path_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE},
  {NULL}
 };
 /* Now we'll actually declare the test suite.  You could do this in
@@ -101,10 +74,17 @@ static const MunitSuite test_suite = {
 
 
 int main(int argc, char* argv[MUNIT_ARRAY_PARAM(argc + 1)]) {
+
+	initialize_debugging();
+
 	/* Finally, we'll actually run our test suite!  That second argument
 	 * is the user_data parameter which will be passed either to the
 	 * test or (if provided) the fixture setup function. */
-	return munit_suite_main(&test_suite, NULL, argc, argv);
+	int status = munit_suite_main(&test_suite, NULL, argc, argv);
+
+	terminate_debugging();
+
+	return status;
 }
 
 

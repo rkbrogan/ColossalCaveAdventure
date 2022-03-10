@@ -4,7 +4,7 @@
 #include "DynamicArray.h"
 #include "Room.h"
 
-typedef const DynamicArray* Path;
+typedef DynamicArray* Path;
 
 Path			createPath();
 const char*		getCurrentRoomName(Path path);
