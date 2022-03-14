@@ -1,10 +1,18 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include  "Room.h"
 #include  "Graph.h"
 
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
+
+#if defined(_WIN64) || defined(_WIN32)
+#else // Linux
+// #define fscanf_s(fp, format, ...) fscanf(fp, __VA_ARGS__)
+#define _strdup(temp) strdup(temp)
+#endif
 
 #define MAX_ROOM_NAME 25
 #define MAX_ROOM_TYPE 15
@@ -26,7 +34,7 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   // See if Room name already exist in graph
   Room* r = findRoom(graph, temp);
   if( getRoomName(r) == NULL) {
-      setRoomName(r, _strdup(temp));
+      setRoomName(r, _strdup((const char*)&temp));
   }
 
   
@@ -35,7 +43,7 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   int connNumber;
 
   // Handle the connections
-  while(fscanf_s(fp, "CONNECTION %d:  %s\n", &connNumber, connName, MAX_ROOM_NAME) == 2)
+  while(fscanf(fp, "CONNECTION %d:  %s\n", &connNumber, connName) == 2)
   {
     // Search graph to see if room pointer exist
     Room* c = findRoom(graph, connName);
@@ -51,7 +59,10 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   // Parse for room type
   char roomType[MAX_ROOM_TYPE];
   
-  fscanf_s(fp, "ROOM TYPE:  %s", roomType, MAX_ROOM_TYPE);
+  if (fscanf(fp, "ROOM TYPE:  %s", roomType) != 1)
+  {
+      return NULL;
+  }
 
   // Set room type
   setRoomType(room, roomType);
@@ -105,8 +116,15 @@ void setRoomType(Room* room, const char* type)
   }
 }
 
-// TODO: Delete this
+
 void destroyRoom(Room* room)
 {
   free(room->roomName);
+  // Loop and free connections names
+  /*for (size_t i = 0; i < room->connections->size; i++)
+  {
+      free(get(room->connections, i));
+  }*/
+
+  destroy(room->connections);
 }

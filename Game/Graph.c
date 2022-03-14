@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,7 +13,8 @@
 
 #if defined(_WIN64) || defined(_WIN32)
 #else
-	#include <dirent.h>
+#include <dirent.h>
+#define sprintf_s(buffer, BUFFER_SIZE, format, dirPath, fileName) sprintf(buffer, format, dirPath, fileName)
 #endif
 
 // Function that checks if a file is a Room file
@@ -51,6 +53,8 @@ static size_t getNumberOfRoomFiles(Directory* directory)
 		{
 			numberOfFiles++;
 		}
+
+		free(dirEntry);
 	}
 
 	return numberOfFiles;
@@ -117,7 +121,6 @@ const Graph* createGraph(const char* dirPath)
 	{
 		if (isRoomFile(dirEntry))
 		{
-			// TODO check max size of linux path
 			char buffer[BUFFER_SIZE] = { 0 };
 			const char* fileName = NULL;
 
@@ -131,21 +134,35 @@ const Graph* createGraph(const char* dirPath)
 			sprintf_s(buffer, BUFFER_SIZE, "%s/%s", dirPath, fileName);
 
 			FILE* fp;
+
+			// TODO: Clean this up (139-154)
+#if defined(_WIN64) || defined(_WIN32)
 			errno_t err;
 
-			// Open file
 			if ((err = fopen_s(&fp, buffer, "r")) != 0)
 			{
-				return ERROR;
+				return NULL;
 			}
 
-			// TODO: Check if this works for fp.
+#else // LINUX
+			fp = fopen(buffer, "r");
+
+			if (!fp)
+			{
+				return NULL;
+			}
+#endif
 
 			Room* newRoom = initializeRoom(&graph->roomsArray[itr], graph, fp);
 			itr++;
 			fclose(fp);
+
 		}
+
+		// Close dirEntry
+		free(dirEntry);
 	}
+
 
 	// Close directory
 	closeDirectory(directory);
@@ -176,7 +193,12 @@ size_t getNumberOfRooms(const Graph* graph)
 }
 
 // Function for destroying a Graph pointer
-void destroyGraph(const Graph* graph)
+void destroyGraph(Graph* graph)
 {
-	free((void*)graph);
+	for (size_t i = 0; i < graph->numberOfRooms; i++)
+	{
+		destroyRoom(&graph->roomsArray[i]);
+	}
+
+	free(graph);
 }

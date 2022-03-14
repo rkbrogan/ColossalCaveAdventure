@@ -1,13 +1,18 @@
 #pragma once
+
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #if defined(_WIN64) || defined(_WIN32)
 #include <windows.h>
-#else
+#define NAME_MAX MAX_PATH
+#else // LINUX
 #include "dirent.h"
+#define strncpy_s(dest, destSize, src, srcSize) strncpy(dest, src, destSize)
+#define strncat_s(dest, destSize, src, srcSize) strncat(dest, src, destSize)
+#define strcpy_s(dest, destSize, src) strcpy(dest, src)
 #endif
 
-#define NAME_MAX MAX_PATH
 
 typedef struct DirectoryEntry_
 {
