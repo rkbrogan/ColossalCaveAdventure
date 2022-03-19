@@ -25,17 +25,35 @@ Room* initializeRoom(Room* room, Graph* graph, FILE* fp)
   uint8_t connectedRoomsCount = 0;
   char temp[1024];
 
-  // Need to initialize Room's connections dynamic array
-  room->connections = create(5);
 
-  // fscanf get room name
-  fscanf_s(fp, "ROOM NAME:  %s\n", temp, 1024);
+  //// Need to initialize Room's connections dynamic array
+  //room->connections = create(5);
+
+  //// fscanf get room name
+  //fscanf_s(fp, "ROOM NAME:  %s\n", temp, 1024);
+  //
+  //// See if Room name already exist in graph
+  //Room* r = findRoom(graph, temp);
+  //if( getRoomName(r) == NULL) {
+  //    setRoomName(r, _strdup((const char*)&temp));
+  //}
+
+  // r->roomName will not match temp
   
-  // See if Room name already exist in graph
-  Room* r = findRoom(graph, temp);
-  if( getRoomName(r) == NULL) {
-      setRoomName(r, _strdup((const char*)&temp));
+  // Get room name from the file
+  fscanf_s(fp, "ROOM NAME:  %s\n", temp, 1024);
+
+  // See if a prepped room already exists with the room name
+  room = findRoom(graph, temp);
+
+  // If returned empty room, set room name
+  if (getRoomName(room) == NULL)
+  {
+      setRoomName(room, _strdup((const char*)&temp));
   }
+
+  // Create its connections array
+  room->connections = create(5);
 
   
   // fscanf loop and get all connections

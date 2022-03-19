@@ -115,6 +115,9 @@ const Graph* createGraph(const char* dirPath)
 	// Reset position of directory pointer
 	rewindDirectory(directory);
 
+	// Flag if start room already found
+	bool foundStartRoom = false;
+
 	size_t itr = 0;
 	// Create rooms
 	while ((dirEntry = readDirectory(directory)))
@@ -154,9 +157,12 @@ const Graph* createGraph(const char* dirPath)
 #endif
 
 			Room* newRoom = initializeRoom(&graph->roomsArray[itr], graph, fp);
-			itr++;
-			fclose(fp);
 
+			// Increment itr
+			itr++;
+
+			// Close current file
+			fclose(fp);
 		}
 
 		// Close dirEntry
@@ -181,7 +187,7 @@ const Graph* createGraph(const char* dirPath)
 }
 
 // Get the starting room from the Graph
-const Room* getStartRoom(const Graph* graph)
+Room* getStartRoom(const Graph* graph)
 {
 	return graph->startRoom;
 }
