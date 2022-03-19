@@ -72,6 +72,7 @@ static MunitResult get_start_room_from_graph(const MunitParameter params[], void
 
 	// Assert
 	munit_assert_int(START_ROOM, == , room->roomType);
+	munit_assert_string_equal("CHARACTER", room->roomName);
 
 	// Clean
 	destroyGraph((Graph*)graph);
