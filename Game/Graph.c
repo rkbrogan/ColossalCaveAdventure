@@ -87,13 +87,6 @@ const Graph* createGraph(const char* dirPath)
 
 	DirectoryEntry* dirEntry;
 
-	/*DIR* directory = opendir(dirPath);
-
-	if (directory == NULL)
-	{
-		return NULL;
-	}*/
-
 	Directory* directory = openDirectory(dirPath);
 
 	assert(directory);
@@ -124,6 +117,8 @@ const Graph* createGraph(const char* dirPath)
 	{
 		if (isRoomFile(dirEntry))
 		{
+			FILE* fp;
+
 			char buffer[BUFFER_SIZE] = { 0 };
 			const char* fileName = NULL;
 
@@ -136,9 +131,6 @@ const Graph* createGraph(const char* dirPath)
 
 			sprintf_s(buffer, BUFFER_SIZE, "%s/%s", dirPath, fileName);
 
-			FILE* fp;
-
-			// TODO: Clean this up (139-154)
 #if defined(_WIN64) || defined(_WIN32)
 			errno_t err;
 

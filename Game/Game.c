@@ -22,14 +22,6 @@ bool isDirectory(DirectoryEntry* dirEntry)
 	return isADirectory;
 }
 
-// Function that returns the path of the most recently built rooms directory
-const char* getMostRecentRoomsDirectory(const char* builtRoomsDirectory)
-{
-	// Use DirectoryEntry to find the most recently created rooms directory.
-	// TODO: Just using the path directly for now
-	return builtRoomsDirectory;
-}
-
 
 // Function that starts and runs the Game
 int executeGame(const char* builtRoomsDirectory)
@@ -157,7 +149,6 @@ int executeGame(const char* builtRoomsDirectory)
 
 int main(int argc, char* argv[])
 {
-	// argv[1] :  Path of all the built room directories
 
 #ifdef _DEBUG
 	//initialize_debugging();
@@ -175,6 +166,7 @@ int main(int argc, char* argv[])
 
 	assert(directory);
 
+	// Get most recently built rooms directory
 	while ((tempDirEntry = readDirectory(directory)) != NULL)
 	{
 		if (isDirectory(tempDirEntry) && (strstr(tempDirEntry->FindFileData.cFileName, ".rooms.")))
