@@ -76,7 +76,7 @@ DirectoryEntry* readDirectory(Directory* directory)
 		destLength = sizeof(dirEntry->name);
 #else
 		dirEntry->entry = readdir(directory->dir);
-		// TODO: Check if readdir is end of directory, 
+		
 		sourceName = dirEntry->entry->d_name;
 		destName = dirEntry->name;
 		destLength = sizeof(dirEntry->name);

@@ -6,25 +6,29 @@
 #include "Graph.h"
 #include "Path.h"
 
+#include <windows.h>
 
-// Function that returns the path of the most recently built rooms directory
-const char* getMostRecentRoomsDirectory(const char* builtRoomsDirectory)
+bool isDirectory(DirectoryEntry* dirEntry)
 {
-	// Use DirectoryEntry to find the most recently created rooms directory.
-	// TODO: Just using the path directly for now
-	return builtRoomsDirectory;
+	bool isADirectory = false;
+
+	const char* dirName = NULL;
+
+	if (dirEntry != NULL)
+	{
+		isADirectory = (dirEntry->FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
+	}
+
+	return isADirectory;
 }
 
 
 // Function that starts and runs the Game
 int executeGame(const char* builtRoomsDirectory)
 {
-	// Find the most recent rooms directory
-	const char* roomsDirectoryPath = _strdup(getMostRecentRoomsDirectory(builtRoomsDirectory));
-
 	// Create Graph of Rooms
 	const Graph* graph = NULL;
-	graph = createGraph(roomsDirectoryPath);
+	graph = createGraph(builtRoomsDirectory);
 	assert(graph != NULL);
 
 	// Initialize Path
@@ -49,7 +53,7 @@ int executeGame(const char* builtRoomsDirectory)
 	// Interact with user until game is over
 	while (isGameOver != true)
 	{
-		printf("CURRENT LOCATION: %s\n", getRoomName(tempRoom));
+		printf("\nCURRENT LOCATION: %s\n", getRoomName(tempRoom));
 
 		// Present connections to user
 		printf("POSSIBLE CONNECTIONS: ");
@@ -69,7 +73,7 @@ int executeGame(const char* builtRoomsDirectory)
 				printf("%s, ", tempConnection->roomName);
 			}
 		}
-
+		
 		// Prompt user where to go to next
 		printf("WHERE TO? >  ");
 
@@ -145,15 +149,54 @@ int executeGame(const char* builtRoomsDirectory)
 
 int main(int argc, char* argv[])
 {
-	// argv[1] :  Path of all the built room directories
 
 #ifdef _DEBUG
 	//initialize_debugging();
 #endif
 
+	// Find the most recently created built rooms
+	DirectoryEntry* tempDirEntry;
+	Directory* directory;
+
+	FILETIME mostRecentCreationTime = { 0, 0 };
+	FILETIME tempTime = { 0, 0 };
+
+	directory = openDirectory("../Rooms");
+	DirectoryEntry* dirEntry = readDirectory(directory);
+
+	assert(directory);
+
+	// Get most recently built rooms directory
+	while ((tempDirEntry = readDirectory(directory)) != NULL)
+	{
+		if (isDirectory(tempDirEntry) && (strstr(tempDirEntry->FindFileData.cFileName, ".rooms.")))
+		{
+			// Get directory creation time
+			tempTime = tempDirEntry->FindFileData.ftCreationTime;
+
+			if (CompareFileTime(&tempTime, &mostRecentCreationTime) > 0)
+			{
+				mostRecentCreationTime = tempTime;
+				dirEntry = tempDirEntry;
+			}
+		}
+	}
+
+	assert(dirEntry);
+
+	if (dirEntry != NULL)
+	{
+		printf("\n%s\n", dirEntry->FindFileData.cFileName);
+	}
+
+
+
 	/*Pass path of where all of the rooms directories are to the game
 		so that it can figure it out the most recently built rooms folder*/
-	int gameResult = executeGame(argv[1]);
+	char buffer[260];
+	sprintf_s(buffer, 260, "../Rooms/%s", dirEntry->FindFileData.cFileName);
+
+	int gameResult = executeGame(buffer);
 
 #ifdef _DEBUG
 	//terminate_debugging();

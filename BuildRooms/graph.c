@@ -166,7 +166,7 @@ void writeGraphFiles(const Graph* graph)
     // Create a buffer that will be used for the directory name
     char buffer[_MAX_PATH];
 
-    sprintf_s(buffer, sizeof(buffer), "riley.rooms.%d", GETPID());
+    sprintf_s(buffer, sizeof(buffer), "../Rooms/riley.rooms.%d", GETPID());
 
     // make directory
     int dirCheck = MKDIR(buffer);

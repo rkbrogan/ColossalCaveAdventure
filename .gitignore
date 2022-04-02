@@ -32,3 +32,4 @@ x86/
 
 # Project generated directories
 BuildRooms/riley.rooms*
+*_room*
